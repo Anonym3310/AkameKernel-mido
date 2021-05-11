@@ -30,12 +30,12 @@ echo -e "$red\n ##--------------------------------------------------------------
 
 #===[ Most Editable ]===#
 
-export DEFCONFIG=mido_defconfig
+export DEFCONFIG=akame_defconfig
 export NKD=mido
 export CODENAME=mido
 GCC_or_CLANG=2 #1 - GCC, 2 - CLANG
 BUILD_KH=2 #1 - ENABLE, 2 - DISABLE
-ONLY_BUILD_KH=1 #1 - DISABLE, 2 - ENABLE
+ONLY_BUILD_KH=2 #1 - DISABLE, 2 - ENABLE
 
 
 #===[ Editable ]===#
@@ -240,7 +240,7 @@ fi
 
 mkdir /${UN}/tmp 
 
-cp -r arch/arm* Makefile ${OUT_DIR}/modules.* ${OUT_DIR}/scripts/mod/modpost ${OUT_DIR}/scripts/genksyms/genksyms  include scripts drivers/misc /${UN}/tmp 
+cp -r arch/arm* Makefile ${OUT_DIR}/Module.symvers ${OUT_DIR}/modules.* ${OUT_DIR}/scripts/mod/modpost ${OUT_DIR}/scripts/genksyms/genksyms  include scripts drivers/misc /${UN}/tmp 
 
 rm -rf * 
 
@@ -281,9 +281,9 @@ echo -e " ##====================================================================
 
 cd /${UN}/${NKD}
 
-rm -rf AnyKernel3
+rm -rf ${ANYKERNEL_DIR}
 
-cp /${UN}/AnyKernel3 /${UN}/${NKD} -r
+cp /${UN}/${ANYKERNEL_DIR} /${UN}/${NKD} -r
 
 	
 if [ "$GCC_or_CLANG" -eq "1" ]
@@ -337,23 +337,26 @@ cd /${UN}/${NKD}
 #===[ COPYNG ]===#
 
 
-cd out && cp $(find -name *.ko) --parents ../${ANYKERNEL_DIR}/modules/system/lib/modules/${KERNEL_NAME}/kernel
-cp $(find -name *.bin) ../${ANYKERNEL_DIR}/modules/system/etc/firmware
-cp $(find -name *.fw) ../${ANYKERNEL_DIR}/modules/system/etc/firmware
-cp modules.* ../${ANYKERNEL_DIR}/modules/system/lib/modules/ && cd ..
- ${ANYKERNEL_DIR}
-cp $(find -name dtbo.img) ${ANYKERNEL_DIR}
+cd ${OUT_DIR} && cp $(find -name *.ko) --parents ../${ANYKERNEL_DIR}/modules/system/lib/modules/${KERNEL_NAME}/kernel
+cd firmware
+cp $(find -name *.bin) -r --parents ${UN}/${NKD}/${ANYKERNEL_DIR}/modules/system/etc/firmware
+cp $(find -name *.fw) -r --parents ${UN}/${NKD}/${ANYKERNEL_DIR}/modules/system/etc/firmware
+cd ..
+cp modules.* ../${ANYKERNEL_DIR}/modules/system/lib/modules/ 
+cd .. 
+cp $(find -name dtbo.img) ${ANYKERNEL_DIR}/
 
 
 #===[ EDITABLE ]===#
 
-cp $(find -name Image.gz-dtb) ${ANYKERNEL_DIR}
+cp $(find -name Image.gz-dtb) ${ANYKERNEL_DIR}/
 #cp $(find -name Image.gz) ${ANYKERNEL_DIR}
 #cp $(find -name dtb) ${ANYKERNEL_DIR}
 
 
 #===[ ZIPPING ]===#
 
+rm -rf ${ANYKERNEL_DIR}/modules/system/lib/modules/${KERNEL_NAME}/kernel/lib/
 
 cd ${ANYKERNEL_DIR} && zip -r -9 AkameKernel-${CODENAME}-$(date +%d-%m-%y).zip * -x .git README.md *placeholder
 
@@ -381,9 +384,9 @@ echo -e " ##====================================================================
 
 cd /${UN}/${NKD}
 
-rm -rf AnyKernel3
+rm -rf ${ANYKERNEL_DIR}
 
-cp /${UN}/AnyKernel3 /${UN}/${NKD} -r
+cp /${UN}/${ANYKERNEL_DIR} /${UN}/${NKD} -r
 
 	
 if [ "$GCC_or_CLANG" -eq "1" ]
@@ -435,23 +438,27 @@ cd /${UN}/${NKD}
 #===[ COPYNG ]===#
 
 
-#cd out && cp $(find -name *.ko) --parents ../${ANYKERNEL_DIR}/modules/system/lib/modules/${KERNEL_NAME}/kernel
-#cp $(find -name *.bin) ../${ANYKERNEL_DIR}/modules/system/etc/firmware
-#cp $(find -name *.fw) ../${ANYKERNEL_DIR}/modules/system/etc/firmware
-cp modules.* ../${ANYKERNEL_DIR}/modules/system/lib/modules/ && cd ..
- ${ANYKERNEL_DIR}
-cp $(find -name dtbo.img) ${ANYKERNEL_DIR}
+cd ${OUT_DIR} && cp $(find -name *.ko) --parents ../${ANYKERNEL_DIR}/modules/system/lib/modules/${KERNEL_NAME}/kernel
+cd firmware
+cp $(find -name *.bin) -r --parents ${UN}/${NKD}/${ANYKERNEL_DIR}/modules/system/etc/firmware
+cp $(find -name *.fw) -r --parents ${UN}/${NKD}/${ANYKERNEL_DIR}/modules/system/etc/firmware
+cd ..
+cp modules.* ../${ANYKERNEL_DIR}/modules/system/lib/modules/
+cd ..
+
+cp $(find -name dtbo.img) ${ANYKERNEL_DIR}/
 
 
 #===[ EDITABLE ]===#
 
-cp $(find -name Image.gz-dtb) ${ANYKERNEL_DIR}
-#cp $(find -name Image.gz) ${ANYKERNEL_DIR}
-#cp $(find -name dtb) ${ANYKERNEL_DIR}
+cp $(find -name Image.gz-dtb) ${ANYKERNEL_DIR}/
+#cp $(find -name Image.gz) ${ANYKERNEL_DIR}/
+#cp $(find -name dtb) ${ANYKERNEL_DIR}/
 
 
 #===[ ZIPPING ]===#
 
+rm -rf ${ANYKERNEL_DIR}/modules/system/lib/modules/${KERNEL_NAME}/kernel/lib/
 
 cd ${ANYKERNEL_DIR} && zip -r -9 AkameKernel-${CODENAME}-$(date +%d-%m-%y).zip * -x .git README.md *placeholder
 
@@ -532,7 +539,7 @@ else
 mkdir /${UN}/tmp 
 
 
-cp -r arch/arm* Makefile ${OUT_DIR}/modules.* ${OUT_DIR}/scripts/mod/modpost ${OUT_DIR}/scripts/genksyms/genksyms  include scripts drivers/misc /${UN}/tmp 
+cp -r arch/arm* Makefile ${OUT_DIR}/Module.symvers ${OUT_DIR}/modules.* ${OUT_DIR}/scripts/mod/modpost ${OUT_DIR}/scripts/genksyms/genksyms  include scripts drivers/misc /${UN}/tmp 
 
 rm -rf * 
 
